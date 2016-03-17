@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">闪讯WIFI助手</string>
+    <string name="pay_vip_msg">仅需支付49元，即可获得VIP身份，永久使用本软件\n使用淘宝支付的在支付成功后请联系店家开通VIP\n支付成功后需要重新登录账号才能使用VIP特权</string>
+    <string name="content_type">application/x-www-form-urlencoded</string>
+    <string name="user_agent">Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0</string>
+    <string name="accept">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</string>
+    <string name="accept_language">zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3</string>
+    <string name="accept_encoding">gzip, deflate</string>
+</resources>

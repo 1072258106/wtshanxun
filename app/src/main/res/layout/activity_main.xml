@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <cn.mandroid.wtshanxun.UI.widget.ActionBar
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/sxAcountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/exchangeBut"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/exchangeBut"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/exchangeBut"
+        android:layout_toStartOf="@+id/exchangeBut"
+        android:background="@drawable/bg_view_frame"
+        android:gravity="center"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/sxAcountEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/exchangeBut"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/exchangeBut"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/exchangeBut"
+        android:layout_toStartOf="@+id/exchangeBut"
+        android:background="@drawable/bg_view_frame_green"
+        android:gravity="center"
+        android:hint="闪讯账号"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/exchangeBut"
+        style="@style/btn_main_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/actionBar"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="60dp"
+        android:text="切换账号" />
+
+    <EditText
+        android:id="@+id/sxPasswordEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/exchangeBut"
+        android:layout_alignLeft="@+id/sxAcountText"
+        android:layout_alignRight="@+id/exchangeBut"
+        android:layout_alignStart="@+id/sxAcountText"
+        android:layout_below="@+id/sxAcountText"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/bg_view_frame"
+        android:hint="闪讯密码"
+        android:padding="10dp"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/mainSubmit"
+        style="@style/btn_main_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/sxPasswordEdit"
+        android:layout_alignLeft="@+id/sxPasswordEdit"
+        android:layout_alignRight="@+id/sxPasswordEdit"
+        android:layout_alignStart="@+id/sxPasswordEdit"
+        android:layout_below="@+id/sxPasswordEdit"
+        android:layout_marginTop="40dp"
+
+        android:text="开始拨号" />
+
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_alignLeft="@+id/sxPasswordEdit"
+        android:layout_below="@+id/mainSubmit"
+        android:layout_marginTop="35dp"
+        android:gravity="center">
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rl"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/rl"
+        android:layout_toRightOf="@+id/rl"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/autoGetPasswordCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/linearLayout2"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/rl"
+            android:layout_marginRight="10dp"
+            android:checked="false"
+            android:padding="3dp"
+            android:text="自动获取密码"
+            android:textColor="@android:color/black" />
+
+        <CheckBox
+            android:id="@+id/sendHeartCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:checked="false"
+            android:padding="3dp"
+            android:text="发送心跳"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+    <View
+        style="@style/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/bottomLayout"
+        android:layout_alignEnd="@+id/mainSubmit"
+        android:layout_alignLeft="@+id/mainSubmit"
+        android:layout_alignRight="@+id/mainSubmit"
+        android:layout_alignStart="@+id/mainSubmit" />
+
+    <RelativeLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignEnd="@+id/mainSubmit"
+        android:layout_alignLeft="@+id/mainSubmit"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/mainSubmit"
+        android:layout_alignStart="@+id/mainSubmit"
+        android:gravity="center">
+
+        <cn.mandroid.wtshanxun.UI.widget.AlwaysMarqueeTextView
+            android:id="@+id/bottomText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="right"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="公告:欢迎使用闪讯WIFI助手"
+            android:textSize="15sp" />
+    </RelativeLayout>
+</RelativeLayout>

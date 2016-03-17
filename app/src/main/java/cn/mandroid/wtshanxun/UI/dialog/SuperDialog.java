@@ -10,6 +10,6 @@ import android.view.WindowManager;
 public class SuperDialog extends Dialog {
     public SuperDialog(Context context, int theme) {
         super(context, theme);
-        getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
     }
 }

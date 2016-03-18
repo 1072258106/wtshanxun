@@ -4,11 +4,15 @@ http://www.wandoujia.com/apps/cn.mandroid.wtshanxun
 #心跳接口：
 ## request
 Url: http://sx.mandroid.cn/index.php/heart/getByRouter
+
 Method: POST/GET
+
 Query:
   user=[闪讯账号]
+  
   ip=[IP地址]
-如：http://sx.mandroid.cn/index.php/heart/getByRouter?user=123456@ABC.XY&ip=192.168.1.1
+  
+示例：http://sx.mandroid.cn/index.php/heart/getByRouter?user=123456@ABC.XY&ip=192.168.1.1
 ## response:
     {
     	"status": 200,

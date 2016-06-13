@@ -74,13 +74,16 @@ public class ShanxunManager extends ApiManager {
     }
 
     private void checkNetwork(final Context context, final FetchCallback callback) {
-        Ion.with(context).load(Constant.API_URL + "/heart/GetIp").setTimeout(10000).asJsonObject().setCallback(new FutureCallback<JsonObject>() {
+        Ion.with(context).load(Constant.API_URL + "/getIp").setTimeout(10000).addHeader("appName", "androidApp").asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override
             public void onCompleted(Exception e, JsonObject result) {
                 if (e == null) {
-                    Constant.DEVICES_IP = result.get("ip").getAsString();
-                    callback.get("dial_success");
-                    checkNeedSentHeart(context);
+                    if(result.get("code").getAsInt()==1){
+                        Constant.DEVICES_IP = result.get("message").getAsString();
+                        callback.get("dial_success");
+                        checkNeedSentHeart(context);
+                    }
+                    callback.error();
                 } else {
                     callback.error();
                 }

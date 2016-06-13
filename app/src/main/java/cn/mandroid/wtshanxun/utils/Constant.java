@@ -5,7 +5,7 @@ package cn.mandroid.wtshanxun.utils;
  */
 public class Constant {
 //    public static String API_URL = "http://qq75376632.vicp.cc:18409/index.php";
-    public static String API_URL = "http://sx.mandroid.cn/index.php";
+    public static String API_URL = "http://6.6.6.100:8081";
 
     public static int SUCCESS = 1;
     public static int CREATE_USER = 1001;

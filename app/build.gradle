@@ -42,7 +42,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.+'
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.pgyersdk:sdk:2.2.2'
     compile 'com.android.support:design:22.+'
 }
 apt {

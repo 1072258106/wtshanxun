@@ -37,7 +37,7 @@ public class HeartManager extends ApiManager {
     private void getHeartData(Context context) {
         Map<String, String> map = new TreeMap<>();
         map.put("user", BeanManager.getUserBean(context).getSxAcount());
-        Ion.with(context).load(Constant.API_URL + "/getHeart").addHeader("appName", "androidApp").setMultipartParameters(finalMap(context, map)).asJsonObject().setCallback(heartDataCallback(context));
+        Ion.with(context).load(Constant.API_URL + "/getHeart").addHeader("appName", "androidApp").setBodyParameters(finalMap(context, map)).asJsonObject().setCallback(heartDataCallback(context));
     }
 
     private FutureCallback<JsonObject> heartDataCallback(final Context context) {

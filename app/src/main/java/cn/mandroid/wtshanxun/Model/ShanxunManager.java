@@ -82,6 +82,7 @@ public class ShanxunManager extends ApiManager {
                         Constant.DEVICES_IP = result.get("message").getAsString();
                         callback.get("dial_success");
                         checkNeedSentHeart(context);
+                        return;
                     }
                     callback.error();
                 } else {
@@ -95,7 +96,6 @@ public class ShanxunManager extends ApiManager {
 
     public void checkNeedSentHeart(Context context) {
         boolean needHeart = Preference.instance(context).getBoolean(Preference.SEND_HEART);
-        UserBean userBean = BeanManager.getUserBean(context);
         if (needHeart) {
             HeartService_.intent(context).start();
         }

@@ -77,7 +77,7 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
     boolean sxAcountValid;
     PowerManager pm;
     PowerManager.WakeLock wakeLock;
-
+    UserBean mUserBean;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +99,8 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
         actionBar.setTitle(getString(R.string.app_name));
         actionBar.setLeftImgVisible(View.GONE);
         actionBar.setOnHeadImgClickListenner(this);
-        initData(BeanManager.getUserBean(context));
+        mUserBean=BeanManager.getUserBean(context);
+        initData(mUserBean);
         if (sxAcountText.getText().toString().length() == 0) {
             exchangeButClick();
         }
@@ -206,7 +207,6 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
     public void onEvent(CheckCallBackEvent event) {
         switch (event.getAction()) {
             case CheckCallBackEvent.CHECK_NETWORK_VALID:
-                String sxAcount = preference.getString(Preference.SX_USER).toUpperCase();
                 if (!event.isSuccess()) {
                     if (!CheckUtils.isWifiConnected(context)) {
                         MToast.show(context, "连接失败,请检查网络");
@@ -214,42 +214,40 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
                         checkSetting(sxAcountEdit.getText().toString().toUpperCase(), sxPasswordEdit.getText().toString());
                     }
                 } else {
-                    updateUser(sxAcount, true);
+                    mShanxunManager.checkNeedSentHeart(context);
+                    initData(mUserBean);
                 }
                 break;
         }
     }
 
-    private void updateUser(String sxAcount, final boolean showToast) {
-        if (showToast) {
-            MToast.show(context, "正在获取用户信息!");
-        }
-        mUserManager.getUserInfo(context, sxAcount, new FetchCallback() {
-            @Override
-            public void get(String result) {
-                preferenceHelper.saveUser(result);
-                UserBean userBean = BeanManager.getUserBean(context);
-                if (showToast) {
-                    MToast.show(context, "获取成功!");
-                }
-                mShanxunManager.checkNeedSentHeart(context);
-                initData(userBean);
-            }
-
-            @Override
-            public void error() {
-                MToast.show(context, "获取失败!");
-                setMainBut(0);
-            }
-        });
-    }
+//    private void updateUser(String sxAcount, final boolean showToast) {
+//        if (showToast) {
+//            MToast.show(context, "正在获取用户信息!");
+//        }
+//        mUserManager.getUserInfo(context, sxAcount, new FetchCallback() {
+//            @Override
+//            public void get(String result) {
+//                preferenceHelper.saveUser(result);
+//                UserBean userBean = BeanManager.getUserBean(context);
+//                if (showToast) {
+//                    MToast.show(context, "获取成功!");
+//                }
+//                initData(userBean);
+//            }
+//
+//            @Override
+//            public void error() {
+//                MToast.show(context, "获取失败!");
+//                setMainBut(0);
+//            }
+//        });
+//    }
 
     public void onEvent(StopHeartEvent event) {
         MToast.show(context, "心跳服务已停止");
         setMainBut(0);
     }
-
-
     @Click(R.id.mainSubmit)
     public void submit() {
         if (sxAcountEdit.getVisibility() == View.GONE) {

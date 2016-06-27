@@ -12,10 +12,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.Map;
 import java.util.TreeMap;
 
 import cn.mandroid.wtshanxun.Model.Bean.BeanManager;
+import cn.mandroid.wtshanxun.Model.Bean.FetchResult;
 import cn.mandroid.wtshanxun.Model.Bean.HeartBean;
 import cn.mandroid.wtshanxun.UI.Service.HeartService;
 import cn.mandroid.wtshanxun.event.StopHeartEvent;
@@ -35,33 +37,27 @@ public class HeartManager extends ApiManager {
     }
 
     private void getHeartData(Context context) {
-        Map<String, String> map = new TreeMap<>();
+        TreeMap<String, String> map = new TreeMap<>();
         map.put("user", BeanManager.getUserBean(context).getSxAcount());
-        Ion.with(context).load(Constant.API_URL + "/getHeart").addHeader("appName", "androidApp").setBodyParameters(finalMap(context, map)).asJsonObject().setCallback(heartDataCallback(context));
-    }
-
-    private FutureCallback<JsonObject> heartDataCallback(final Context context) {
-        return new FutureCallback<JsonObject>() {
+        post(context, "/getHeart", map, new FetchCallback() {
             @Override
-            public void onCompleted(Exception e, JsonObject result) {
-                if (e == null) {
+            public void get(FetchResult result) {
+                if (result.isSuccess()) {
+                    HeartBean bean = new Gson().fromJson(result.getData(), HeartBean.class);
                     try {
-                        if (result.get("code").getAsInt() == 4) {
-                            HeartService.eventBus.post(new StopHeartEvent());
-                            return;
-                        } else if (result.get("code").getAsInt() != 1) {
-                            return;
-                        }
-                        HeartBean bean = new Gson().fromJson(result.get("data"), HeartBean.class);
                         HeartService.eventBus.post(Udp.instance(bean.getAddress(), bean.getPort(), Base64.decode(bean.getData().toCharArray())));
-                    } catch (Exception e1) {
+                        TotalEvent event = new TotalEvent();
+                        event.setSendHeartCount();
+                        HeartService.eventBus.post(event);
+                    } catch (SocketException e) {
                         return;
                     }
-                    TotalEvent event = new TotalEvent();
-                    event.setSendHeartCount();
-                    HeartService.eventBus.post(event);
                 }
             }
-        };
+            @Override
+            public void error() {
+
+            }
+        });
     }
 }

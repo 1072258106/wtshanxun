@@ -10,6 +10,7 @@ import org.androidannotations.annotations.EBean;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import cn.mandroid.wtshanxun.utils.Constant;
 import cn.mandroid.wtshanxun.utils.Preference;
@@ -20,24 +21,8 @@ import cn.mandroid.wtshanxun.utils.Preference;
 @EBean
 public class UserManager extends ApiManager {
     public void getNotice(final Context context, final String user, final FetchCallback callback) {
-        Map<String, String> map = new HashMap<String, String>();
+        TreeMap<String, String> map = new TreeMap<String, String>();
         map.put("user", user);
-        Ion.with(context)
-                .load(Constant.API_URL + "/getNotice")
-                .addHeader("appName", "androidApp")
-                .setBodyParameters(finalMap(context, map))
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if (e == null) {
-                            if (result.get("code").getAsInt() == 1) {
-                                callback.get(result.get("message").getAsString());
-                                return;
-                            }
-                        }
-                        callback.error();
-                    }
-                });
+        post(context,"/getNotice",map,callback);
     }
 }

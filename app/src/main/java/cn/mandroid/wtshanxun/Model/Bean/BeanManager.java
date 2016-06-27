@@ -2,7 +2,6 @@ package cn.mandroid.wtshanxun.Model.Bean;
 
 import android.content.Context;
 
-import com.tencent.android.tpush.XGPushManager;
 
 
 import cn.mandroid.wtshanxun.utils.CheckUtils;
@@ -24,14 +23,11 @@ public class BeanManager {
             String user = preference.getString(Preference.SX_USER);
             userBean.setSessionId(preference.getString(Preference.SESSION_ID));
             userBean.setSxAcount(user);
-            XGPushManager.registerPush(context, user);
-//            XGPushConfig.enableDebug(context, true);
         }
         return userBean;
     }
 
     public static void cleanUser(Context context) {
         userBean = null;
-        XGPushManager.unregisterPush(context);
     }
 }

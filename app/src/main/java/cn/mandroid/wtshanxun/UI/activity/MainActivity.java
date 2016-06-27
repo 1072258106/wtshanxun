@@ -3,10 +3,12 @@ package cn.mandroid.wtshanxun.UI.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.google.gson.Gson;
+
 import org.androidannotations.annotations.AfterTextChange;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
@@ -29,7 +33,10 @@ import org.androidannotations.annotations.ViewById;
 
 import java.io.UnsupportedEncodingException;
 
+import cn.mandroid.wtshanxun.Model.ApiCallback;
 import cn.mandroid.wtshanxun.Model.Bean.BeanManager;
+import cn.mandroid.wtshanxun.Model.Bean.FetchResult;
+import cn.mandroid.wtshanxun.Model.Bean.NoticeBean;
 import cn.mandroid.wtshanxun.Model.Bean.UserBean;
 import cn.mandroid.wtshanxun.Model.FetchCallback;
 import cn.mandroid.wtshanxun.Model.ShanxunManager;
@@ -78,17 +85,16 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
     PowerManager pm;
     PowerManager.WakeLock wakeLock;
     UserBean mUserBean;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Tools.setWifiNeverDormancy(this);
         setWake();
-        Tools.initSign(this);
     }
 
     private void setWake() {
         pm = (PowerManager) getApplication().getSystemService(Context.POWER_SERVICE);
-        // 保持cpu一直运行，不管屏幕是否黑屏
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "CPUKeepRunning");
         wakeLock.acquire();
@@ -99,7 +105,7 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
         actionBar.setTitle(getString(R.string.app_name));
         actionBar.setLeftImgVisible(View.GONE);
         actionBar.setOnHeadImgClickListenner(this);
-        mUserBean=BeanManager.getUserBean(context);
+        mUserBean = BeanManager.getUserBean(context);
         initData(mUserBean);
         if (sxAcountText.getText().toString().length() == 0) {
             exchangeButClick();
@@ -109,8 +115,22 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
     private void initNotice() {
         mUserManager.getNotice(context, sxAcountText.getText().toString(), new FetchCallback() {
             @Override
-            public void get(String result) {
-                bottomText.setText(Html.fromHtml(result));
+            public void get(FetchResult result) {
+                if (result.isSuccess()) {
+                    final NoticeBean bean = new Gson().fromJson(result.getData(), NoticeBean.class);
+                    bottomText.setText(Html.fromHtml(bean.getContent()));
+                    if (!TextUtils.isEmpty(bean.getUrl())) {
+                        bottomText.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                Uri uri = Uri.parse(bean.getUrl());
+                                intent.setData(uri);
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                }
             }
 
             @Override
@@ -221,33 +241,11 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
         }
     }
 
-//    private void updateUser(String sxAcount, final boolean showToast) {
-//        if (showToast) {
-//            MToast.show(context, "正在获取用户信息!");
-//        }
-//        mUserManager.getUserInfo(context, sxAcount, new FetchCallback() {
-//            @Override
-//            public void get(String result) {
-//                preferenceHelper.saveUser(result);
-//                UserBean userBean = BeanManager.getUserBean(context);
-//                if (showToast) {
-//                    MToast.show(context, "获取成功!");
-//                }
-//                initData(userBean);
-//            }
-//
-//            @Override
-//            public void error() {
-//                MToast.show(context, "获取失败!");
-//                setMainBut(0);
-//            }
-//        });
-//    }
-
     public void onEvent(StopHeartEvent event) {
         MToast.show(context, "心跳服务已停止");
         setMainBut(0);
     }
+
     @Click(R.id.mainSubmit)
     public void submit() {
         if (sxAcountEdit.getVisibility() == View.GONE) {
@@ -275,9 +273,9 @@ public class MainActivity extends BasicActivity implements ActionBar.OnHeadImgCl
         }
         setMainBut(1);
         try {
-            mShanxunManager.startDial(context, sxUser, sxPass, new FetchCallback() {
+            mShanxunManager.routerDial(context, sxUser, sxPass, new ApiCallback() {
                 @Override
-                public void get(String result) {
+                public void onSuccess(String result) {
                     if (result.equals("dial_finish")) {
                         setMainBut(2);
                     } else if (result.equals("dial_success")) {

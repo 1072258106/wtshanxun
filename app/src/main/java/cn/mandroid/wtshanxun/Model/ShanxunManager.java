@@ -2,6 +2,7 @@ package cn.mandroid.wtshanxun.Model;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -13,7 +14,9 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 import cn.mandroid.wtshanxun.Model.Bean.BeanManager;
+import cn.mandroid.wtshanxun.Model.Bean.IpConfig;
 import cn.mandroid.wtshanxun.Model.Bean.UserBean;
+import cn.mandroid.wtshanxun.utils.CheckUtils;
 import cn.mandroid.wtshanxun.utils.Pin;
 import cn.mandroid.wtshanxun.utils.Sto16;
 import cn.mandroid.wtshanxun.R;
@@ -28,7 +31,7 @@ import cn.mandroid.wtshanxun.utils.Preference;
  */
 @EBean
 public class ShanxunManager extends ApiManager {
-    public void startDial(Context context, String sxAcount, String sxPass, FetchCallback callback) throws UnsupportedEncodingException {
+    public void routerDial(Context context, String sxAcount, String sxPass, ApiCallback callback) throws UnsupportedEncodingException {
         Preference preference = Preference.instance(context);
         String acount = getFinalUser(sxAcount);
         String routerIp = preference.getString(Preference.ROUTER_IP);
@@ -58,12 +61,12 @@ public class ShanxunManager extends ApiManager {
                 .setCallback(dialCall(context, callback));
     }
 
-    private FutureCallback<String> dialCall(final Context context, final FetchCallback callback) {
+    private FutureCallback<String> dialCall(final Context context, final ApiCallback callback) {
         return new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
                 if (e == null) {
-                    callback.get("dial_finish");
+                    callback.onSuccess("dial_finish");
                     checkNetwork(context, callback);
                 } else {
                     callback.error();
@@ -73,25 +76,30 @@ public class ShanxunManager extends ApiManager {
         };
     }
 
-    private void checkNetwork(final Context context, final FetchCallback callback) {
-        Ion.with(context).load(Constant.API_URL + "/getIp").setTimeout(10000).addHeader("appName", "androidApp").asJsonObject().setCallback(new FutureCallback<JsonObject>() {
+    private void checkNetwork(final Context context, final ApiCallback callback) {
+        postOtherApi(context, "http://1212.ip138.com/ic.asp", null, new ApiCallback() {
             @Override
-            public void onCompleted(Exception e, JsonObject result) {
-                if (e == null) {
-                    if(result.get("code").getAsInt()==1){
-                        Constant.DEVICES_IP = result.get("message").getAsString();
-                        callback.get("dial_success");
+            public void onSuccess(String result) {
+                try {
+                    String ip = result.substring(result.indexOf("[")+ 1, result.indexOf("]") );
+                    if (CheckUtils.isIp(ip)) {
+                        Constant.DEVICES_IP = ip;
+                        callback.onSuccess("dial_success");
                         checkNeedSentHeart(context);
-                        return;
+                    } else {
+                        callback.error();
                     }
-                    callback.error();
-                } else {
+                } catch (Exception e) {
                     callback.error();
                 }
 
             }
-        });
 
+            @Override
+            public void error() {
+                callback.error();
+            }
+        });
     }
 
     public void checkNeedSentHeart(Context context) {
